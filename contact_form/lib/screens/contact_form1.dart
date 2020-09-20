@@ -1,17 +1,12 @@
+import 'package:contact_form/controllers/contact_form_controller.dart';
+import 'package:contact_form/widgets/button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ContactFormOne extends StatefulWidget {
-  @override
-  _ContactFormOneState createState() => _ContactFormOneState();
-}
-
-class _ContactFormOneState extends State<ContactFormOne> {
+class ContactFormOne extends GetView<ContactFormController> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _autoValidate = false;
-
+  final ContactFormController contactForm = Get.put(ContactFormController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +22,7 @@ class _ContactFormOneState extends State<ContactFormOne> {
             Padding(padding: EdgeInsets.all(8.0)),
             Form(
                 key: _formKey,
-                autovalidate: _autoValidate,
+                autovalidate: controller.autovalidte,
                 child: Column(
                   children: [
                     TextFormField(
@@ -159,33 +154,13 @@ class _ContactFormOneState extends State<ContactFormOne> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                RaisedButton(
-                  onPressed: submit,
-                  color: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                BtnWidget(
+                  txt: 'Submit',
+                  btn: submit,
                 ),
-                RaisedButton(
-                  onPressed: reset,
-                  color: Colors.amber,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text(
-                      'Reset',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                BtnWidget(
+                  txt: 'Reset',
+                  btn: reset,
                 )
               ],
             )
@@ -199,28 +174,24 @@ class _ContactFormOneState extends State<ContactFormOne> {
     if (_formKey.currentState.validate()) {
       displayDialog();
     } else {
-      setState(() {
-        _autoValidate = true;
-      });
+      contactForm.validateForm();
     }
   }
 
   void displayDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => new CupertinoAlertDialog(
-        title: new Text("Successful"),
-        content: new Text("Thank you for your inquire"),
+    Get.defaultDialog(
+        title: 'Alert',
+        content: Container(
+          child: Text('Hello World!..'),
+        ),
         actions: [
-          CupertinoDialogAction(
-            child: new Text("Close"),
-            onPressed: () {
-              Get.back();
-            },
-          )
-        ],
-      ),
-    );
+          FlatButton(
+              onPressed: () {
+                Get.back();
+              },
+              color: Colors.red,
+              child: Text('Close'))
+        ]);
   }
 
   void reset() {
